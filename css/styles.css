@@ -1,0 +1,767 @@
+/* =============================================================
+   Expense & Budget Visualizer — Styles
+   ============================================================= */
+
+/* ── CSS Custom Properties ── */
+:root {
+  --color-food:      #FF6384;
+  --color-transport: #36A2EB;
+  --color-fun:       #FFCE56;
+
+  /* Layout */
+  --max-width: 1100px;
+  --gap:       1.5rem;
+  --gap-mobile: 0.75rem;    /* tighter gap on very narrow viewports */
+  --radius:    0.5rem;
+
+  /* Typography */
+  --font-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Colors — Light theme (genuine light, default per Req 10.5) */
+  --clr-bg:        #f3f1fb;
+  --clr-bg-grad:   radial-gradient(1200px 600px at 15% -10%, rgba(124,58,237,0.10), transparent 60%),
+                   radial-gradient(900px 500px at 100% 0%, rgba(34,211,238,0.10), transparent 55%),
+                   #f3f1fb;
+  --clr-surface:   #ffffff;
+  --clr-surface-2: #faf9ff;
+  --clr-border:    #e1dcf5;
+  --clr-text:      #1b1430;
+  --clr-muted:     #665f80;
+  --clr-primary:   #7c3aed;
+  --clr-primary-h: #6d28d9;
+  --clr-accent:    #0891b2;
+  --clr-danger:    #dc2626;
+  --clr-warning-bg:#fffbeb;
+  --clr-warning-border: #f59e0b;
+  --clr-error-bg:  #fef2f2;
+  --clr-error-border: #fca5a5;
+}
+
+/* ── Base Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  /* Prevent horizontal scroll on the entire document */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-base);
+  background: var(--clr-bg-grad);
+  background-attachment: fixed;
+  color: var(--clr-text);
+  line-height: 1.5;
+  min-height: 100vh;
+  /* Req 6.3 — prevent horizontal scrollbar at any narrow viewport width */
+  overflow-x: hidden;
+}
+
+img,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ── Navbar ── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: color-mix(in srgb, var(--clr-bg) 72%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0.75rem var(--gap-mobile);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 481px) {
+  .navbar-inner {
+    padding: 0.875rem var(--gap);
+  }
+}
+
+.navbar-brand {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.navbar-brand-mark {
+  color: var(--clr-accent);
+  font-size: 1.125rem;
+}
+
+.navbar-brand-accent {
+  color: var(--clr-accent);
+}
+
+/* Theme toggle now lives inline in the navbar (no longer a floating FAB) */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  border-color: var(--clr-accent);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+/* ── Hero ── */
+.app-header {
+  position: relative;
+  padding: 2.5rem var(--gap-mobile) 2rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+@media (min-width: 481px) {
+  .app-header {
+    padding: 3.5rem var(--gap) 2.75rem;
+  }
+}
+
+.hero-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(90deg, var(--clr-text), var(--clr-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (min-width: 481px) {
+  .app-title {
+    font-size: 2.25rem;
+  }
+}
+
+.hero-subtitle {
+  color: var(--clr-muted);
+  font-size: 0.9375rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ── Balance Display ── */
+.balance-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.balance-label {
+  font-size: 0.8125rem;
+  color: var(--clr-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.balance-amount {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--clr-text);
+}
+
+@media (min-width: 481px) {
+  .balance-amount {
+    font-size: 3.25rem;
+  }
+}
+
+/* Persistent over-limit warning text, shown below the balance */
+.limit-warning {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  max-width: 420px;
+  background-color: var(--clr-warning-bg);
+  border: 1px solid var(--clr-warning-border);
+  border-radius: var(--radius);
+  color: #fbbf24;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ── App Main (single column → multi-column) ── */
+/* Req 6.1 — single-column default (mobile-first) */
+/* Req 6.3 — use gap-mobile so total padding never exceeds the viewport at 320 px */
+.app-main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--gap-mobile);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-mobile);
+  /* Belt-and-suspenders guard against child overflow */
+  overflow-x: hidden;
+}
+
+/* Req 6.2 — multi-column layout above 480 px */
+@media (min-width: 481px) {
+  .app-main {
+    padding: var(--gap);
+    gap: var(--gap);
+    /* Form on the left, list + chart stacked on the right */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    grid-template-rows: auto auto;
+  }
+
+  .form-section {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .list-section {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .chart-section {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* ── Section Cards ── */
+.form-section,
+.list-section,
+.chart-section {
+  background-color: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset,
+              0 12px 30px -16px rgba(0,0,0,0.6);
+  /* Prevent card content from ever protruding the grid cell */
+  min-width: 0;
+}
+
+.section-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.125rem;
+  color: var(--clr-accent);
+}
+
+/* ── Form ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--clr-text);
+}
+
+/* Req 6.4 — minimum 44 × 44 px tap target for inputs and selects */
+.form-group input,
+.form-group select {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  color: var(--clr-text);
+  background-color: var(--clr-surface-2);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+}
+
+/* Invalid state */
+.form-group input[aria-invalid="true"],
+.form-group select[aria-invalid="true"] {
+  border-color: var(--clr-danger);
+  background-color: var(--clr-error-bg);
+}
+
+/* Field error messages — hidden by default; made visible by JS via modifier class */
+.field-error {
+  display: none;              /* hidden until JS adds .field-error--visible */
+  font-size: 0.8125rem;
+  color: var(--clr-danger);
+}
+
+/* JS adds this class when a field has a validation error */
+.field-error--visible {
+  display: block;
+}
+
+/* Req 6.4 — minimum 44 × 44 px tap target for the submit button */
+.btn-submit {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(90deg, var(--clr-primary), var(--clr-accent));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+  margin-top: 0.5rem;
+}
+
+/* Req 6.5 — focus-visible style ensures keyboard/touch users get clear feedback */
+.btn-submit:hover,
+.btn-submit:focus-visible {
+  filter: brightness(1.1);
+}
+
+.btn-submit:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 3px;
+}
+
+/* Storage error (below submit button) */
+.storage-error {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background-color: var(--clr-error-bg);
+  border: 1px solid var(--clr-error-border);
+  border-radius: var(--radius);
+  color: var(--clr-danger);
+  font-size: 0.875rem;
+}
+
+/* JS adds this class when there is an active storage error to show */
+.storage-error--visible {
+  display: block !important;
+}
+
+/* ── App-level Warning Banner ── */
+.app-warning {
+  margin-bottom: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background-color: var(--clr-warning-bg);
+  border: 1px solid var(--clr-warning-border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: #92400e;
+  /* Smooth fade-out when auto-dismissed */
+  transition: opacity 0.3s ease;
+}
+
+/* JS adds this class while the warning is actively displayed */
+.app-warning--visible {
+  opacity: 1;
+}
+
+.app-warning:not(.app-warning--visible) {
+  opacity: 0;
+}
+
+/* ── Sort Control ── */
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sort-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--clr-text);
+  white-space: nowrap;
+}
+
+/* Req 6.4 — minimum 44 × 44 px tap target */
+.sort-select {
+  min-height: 44px;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: var(--clr-text);
+  background-color: var(--clr-surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  flex: 1;
+}
+
+.sort-select:focus {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+  border-color: var(--clr-primary);
+}
+
+/* ── Transaction List ── */
+/* Req 2.3 — scrollable when items overflow the visible area */
+.transaction-list {
+  max-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Empty-state message */
+.empty-state {
+  color: var(--clr-muted);
+  font-size: 0.9375rem;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+/* Individual transaction item */
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-info {
+  flex: 1;
+  min-width: 0;       /* allow flex child to shrink below its content size */
+}
+
+/* display: block so the <span> stacks as a block within the flex info div */
+.transaction-name {
+  display: block;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* display: block so the meta line sits below the name */
+.transaction-meta {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--clr-muted);
+}
+
+.transaction-amount {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Category badge */
+.category-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.category-badge--food      { background-color: var(--color-food); }
+.category-badge--transport { background-color: var(--color-transport); }
+.category-badge--fun       { background-color: var(--color-fun); color: #333; }
+
+/* Delete button — Req 6.4: 44 × 44 px minimum tap target */
+.btn-delete {
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--clr-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+/* Req 6.5 — hover styles are paired with focus-visible so touch users get
+   the same visual feedback on keyboard focus without being locked out */
+.btn-delete:hover,
+.btn-delete:focus-visible {
+  color: var(--clr-danger);
+  border-color: var(--clr-danger);
+}
+
+.btn-delete:focus-visible {
+  outline: 2px solid var(--clr-danger);
+  outline-offset: 2px;
+}
+
+/* ── Chart Section ── */
+/* Fixed-aspect-ratio box so Chart.js's own resize-driven width/height
+   writes on the canvas element always resolve against a stable,
+   non-flexing parent — prevents the canvas from "flattening" after
+   the container crosses a breakpoint more than once (desktop → tablet
+   → desktop). The canvas is absolutely positioned to fill this box;
+   Chart.js's responsive/maintainAspectRatio options are untouched. */
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+#spending-chart {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--clr-muted);
+  font-size: 0.9375rem;
+  text-align: center;
+}
+
+/* ── Compatibility Warning ── */
+.compat-warning {
+  margin: var(--gap-mobile);
+  padding: 1.25rem;
+  background-color: var(--clr-error-bg);
+  border: 2px solid var(--clr-error-border);
+  border-radius: var(--radius);
+  color: var(--clr-danger);
+}
+
+@media (min-width: 481px) {
+  .compat-warning {
+    margin: var(--gap);
+  }
+}
+
+.compat-warning__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.compat-warning__body {
+  font-size: 0.9375rem;
+  margin-bottom: 0.75rem;
+}
+
+.compat-warning__list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+}
+
+/* Keep old class name as alias for backward-compat */
+.compatibility-warning {
+  margin: var(--gap-mobile);
+  padding: 1rem;
+  background-color: var(--clr-error-bg);
+  border: 2px solid var(--clr-error-border);
+  border-radius: var(--radius);
+  color: var(--clr-danger);
+}
+
+@media (min-width: 481px) {
+  .compatibility-warning {
+    margin: var(--gap);
+  }
+}
+
+.compatibility-warning h2 {
+  margin-bottom: 0.5rem;
+}
+
+/* ── Utility ── */
+[hidden] {
+  display: none !important;
+}
+
+/* ── Spending Limit Section ── */
+.spending-limit-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+.spending-limit-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--clr-text);
+}
+
+.spending-limit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Req 6.4 — minimum 44 × 44 px tap target */
+.btn-set-limit,
+.btn-clear-limit {
+  flex: 1;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-set-limit {
+  background: linear-gradient(90deg, var(--clr-primary), var(--clr-accent));
+  color: #fff;
+  border: none;
+}
+
+.btn-set-limit:hover,
+.btn-set-limit:focus-visible {
+  filter: brightness(1.1);
+}
+
+.btn-set-limit:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 3px;
+}
+
+.btn-clear-limit {
+  background-color: transparent;
+  color: var(--clr-danger);
+  border: 1px solid var(--clr-danger);
+}
+
+.btn-clear-limit:hover,
+.btn-clear-limit:focus-visible {
+  background-color: var(--clr-error-bg);
+}
+
+.btn-clear-limit:focus-visible {
+  outline: 2px solid var(--clr-danger);
+  outline-offset: 3px;
+}
+
+/* =============================================================
+   Spending Limit Highlight (Req 9.4, 9.5, 9.7)
+   ============================================================= */
+/* Balance total exceeds the limit → amber chip, solid color for reliable contrast */
+.balance-amount.over-limit {
+  color: #fbbf24;
+  text-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+}
+
+/* Individual transaction exceeds the limit → red left bar + tinted row */
+.transaction-item.item-over-limit {
+  background-color: rgba(220, 38, 38, 0.08);
+  box-shadow: inset 4px 0 0 var(--clr-danger);
+  padding-left: 0.5rem;
+}
+
+/* =============================================================
+   Dark Mode (Req 10) — dark/neon palette, clearly distinct from the
+   light theme above. Only CSS classes on <html>, no inline styles
+   (Req 10.6). Palette chosen so all text meets ≥ 4.5:1 contrast
+   (Req 10.7).
+   ============================================================= */
+html.dark-mode {
+  --clr-bg:             #05070d;
+  --clr-bg-grad:        radial-gradient(1200px 600px at 15% -10%, rgba(124,58,237,0.22), transparent 60%),
+                        radial-gradient(900px 500px at 100% 0%, rgba(34,211,238,0.12), transparent 55%),
+                        #05070d;
+  --clr-surface:        #0d1120;
+  --clr-surface-2:      #10152a;
+  --clr-border:         #232a44;
+  --clr-text:           #f3f5fc;
+  --clr-muted:          #8992b3;
+  --clr-primary:        #8b5cf6;
+  --clr-primary-h:      #7c3aed;
+  --clr-accent:         #2dd4e8;
+  --clr-danger:         #fca5a5;
+  --clr-warning-bg:     #2e2208;
+  --clr-warning-border: #f59e0b;
+  --clr-error-bg:       #30101a;
+  --clr-error-border:   #7f1d1d;
+}
+
+/* Category badges — darken text on bright badge colors for contrast */
+html.dark-mode .category-badge--food,
+html.dark-mode .category-badge--transport {
+  color: #111827;
+}
+
+/* Over-limit item on dark surface */
+html.dark-mode .transaction-item.item-over-limit {
+  background-color: rgba(248, 113, 113, 0.12);
+}

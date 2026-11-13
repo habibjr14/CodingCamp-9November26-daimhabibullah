@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <span class="navbar-brand">
+        <span class="navbar-brand-mark" aria-hidden="true">◈</span>
+        Expense<span class="navbar-brand-accent">.Viz</span>
+      </span>
+      <button type="button" class="theme-toggle" id="theme-toggle"
+              onclick="handleThemeToggle()"
+              aria-label="Switch to dark mode">🌙</button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO: Balance Display ===== -->
+  <header class="app-header">
+    <div class="hero-inner">
+      <h1 class="app-title">Take Control of Your Spending,<br />See the Patterns.</h1>
+      <p class="hero-subtitle">Track daily transactions, monitor categories, and stay on top of your budget.</p>
+      <div class="balance-container">
+        <span class="balance-label">Total Spent</span>
+        <span class="balance-amount" id="balance-display">$0.00</span>
+        <p class="limit-warning" id="limit-warning" role="alert" aria-live="polite" hidden></p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="app-main">
+
+    <!-- Input Form -->
+    <section class="form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="section-title">Add Transaction</h2>
+      <form id="transaction-form" novalidate>
+
+        <div class="form-group">
+          <label for="item-name">Item Name</label>
+          <input
+            type="text"
+            id="item-name"
+            name="name"
+            maxlength="100"
+            placeholder="e.g. Coffee"
+            autocomplete="off"
+          />
+          <span class="field-error" id="error-name" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="item-amount">Amount ($)</label>
+          <input
+            type="number"
+            id="item-amount"
+            name="amount"
+            min="0.01"
+            max="999999999.99"
+            step="0.01"
+            placeholder="e.g. 4.50"
+          />
+          <span class="field-error" id="error-amount" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="item-category">Category</label>
+          <select id="item-category" name="category">
+            <option value="">-- Select category --</option>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Fun">Fun</option>
+          </select>
+          <span class="field-error" id="error-category" role="alert" aria-live="polite"></span>
+        </div>
+
+        <button type="submit" class="btn-submit">Add Transaction</button>
+
+        <!-- Storage error shown here on submit failure -->
+        <div class="storage-error" id="storage-error" role="alert" aria-live="assertive" hidden></div>
+
+      </form>
+
+      <!-- Spending Limit -->
+      <div class="spending-limit-section" aria-labelledby="limit-heading">
+        <h3 id="limit-heading" class="spending-limit-title">Spending Limit</h3>
+        <div class="spending-limit-form">
+          <div class="form-group">
+            <label for="spending-limit-input">Limit Amount ($)</label>
+            <input
+              type="number"
+              id="spending-limit-input"
+              name="spendingLimit"
+              min="0.01"
+              max="999999999.99"
+              step="0.01"
+              placeholder="e.g. 500.00"
+            />
+            <span class="field-error" id="error-spending-limit" role="alert" aria-live="polite"></span>
+          </div>
+          <div class="spending-limit-actions">
+            <button type="button" class="btn-set-limit" id="btn-set-limit">Set Limit</button>
+            <button type="button" class="btn-clear-limit" id="btn-clear-limit">Clear Limit</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transaction List -->
+    <section class="list-section" aria-labelledby="list-heading">
+      <h2 id="list-heading" class="section-title">Transaction History</h2>
+
+      <!-- Non-blocking storage / compatibility warnings appear here -->
+      <div class="app-warning" id="app-warning" role="status" aria-live="polite" hidden></div>
+
+      <!-- Sort control -->
+      <div class="sort-control">
+        <label for="sort-order" class="sort-label">Sort by:</label>
+        <select id="sort-order" name="sortOrder" class="sort-select">
+          <option value="default">Default (Recent First)</option>
+          <option value="amount-asc">Amount: Low to High</option>
+          <option value="amount-desc">Amount: High to Low</option>
+          <option value="category-asc">Category: A–Z</option>
+        </select>
+      </div>
+
+      <ul class="transaction-list" id="transaction-list" aria-label="Transaction history">
+        <!-- Items rendered by JS; empty-state message shown when list is empty -->
+        <li class="empty-state" id="empty-state">No transactions recorded yet.</li>
+      </ul>
+    </section>
+
+    <!-- Chart -->
+    <section class="chart-section" aria-labelledby="chart-heading">
+      <h2 id="chart-heading" class="section-title">Spending by Category</h2>
+      <div class="chart-container" id="chart-container">
+        <canvas id="spending-chart" aria-label="Spending distribution pie chart" role="img"></canvas>
+        <p class="chart-no-data" id="chart-no-data" hidden>No spending data available.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Chart.js from CDN (loaded before app.js so the Chart global is available) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- App logic (defer ensures DOM is ready) -->
+  <script src="js/app.js" defer></script>
+
+</body>
+</html>
